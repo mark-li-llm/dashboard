@@ -183,11 +183,11 @@ def create_timeline(df):
     ))
 
     fig.update_layout(
-        title="Weekly Case Reports",
+        title=dict(text="Weekly Case Reports", y=0.95),
         xaxis_title="Week",
         yaxis_title="Number of Cases",
-        height=300,
-        margin=dict(l=40, r=40, t=40, b=40),
+        height=350,
+        margin=dict(l=40, r=40, t=60, b=40),
         showlegend=False
     )
 
@@ -236,40 +236,6 @@ def create_syndrome_chart(df):
         title="Syndrome Distribution",
         height=350,
         margin=dict(l=40, r=40, t=40, b=40),
-    )
-
-    return fig
-
-
-def create_severity_trend(df):
-    """Create severity trend over time."""
-    df["month"] = df["report_date"].dt.to_period("M").astype(str)
-
-    severity_monthly = df.groupby(["month", "severity"]).size().reset_index(name="count")
-
-    color_map = {
-        "Low": "#95D5B2",
-        "Moderate": "#74C69D",
-        "High": "#F4A261",
-        "Critical": "#E63946"
-    }
-
-    fig = px.area(
-        severity_monthly,
-        x="month",
-        y="count",
-        color="severity",
-        color_discrete_map=color_map,
-        category_orders={"severity": ["Low", "Moderate", "High", "Critical"]}
-    )
-
-    fig.update_layout(
-        title="Severity Trends Over Time",
-        xaxis_title="Month",
-        yaxis_title="Cases",
-        height=300,
-        margin=dict(l=40, r=40, t=40, b=40),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
     )
 
     return fig
@@ -401,7 +367,6 @@ def main():
         st.subheader("📈 Case Trends")
         if len(filtered_df) > 0:
             st.plotly_chart(create_timeline(filtered_df), use_container_width=True)
-            st.plotly_chart(create_severity_trend(filtered_df), use_container_width=True)
         else:
             st.warning("No data available for selected filters.")
 
